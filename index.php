@@ -161,21 +161,30 @@ $kamar_terisi = $laporan->jumlahKamarTidakTersedia();
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>Christopher Nolan</td>
-                        <td>Kamar 01</td>
-                        <td><span class="badge bg-success">Lunas</span></td>
-                      </tr>
-                      <tr>
-                        <td>Udin Pecok</td>
-                        <td>Kamar 02</td>
-                        <td><span class="badge bg-success">Lunas</span></td>
-                      </tr>
-                      <tr>
-                        <td>Christopher Usop</td>
-                        <td>Kamar 03</td>
-                        <td><span class="badge bg-danger">Tertunggak</span></td>
-                      </tr>
+                      <?php
+                      $kamarModel = new Kamar();
+                      $pembayaran_list = $kamarModel->tampil();
+                      $has_pembayaran = false;
+                      if ($pembayaran_list && $pembayaran_list->num_rows > 0) {
+                        while ($row = $pembayaran_list->fetch_assoc()) {
+                          if (!empty($row['nama_penyewa']) && $row['nama_penyewa'] != '-') {
+                            $has_pembayaran = true;
+                            $badge_class = ($row['status_pembayaran'] == 'Sudah Bayar') ? 'bg-success' : 'bg-danger';
+                            $label = ($row['status_pembayaran'] == 'Sudah Bayar') ? 'Lunas' : 'Belum Lunas';
+                            ?>
+                            <tr>
+                              <td><?php echo htmlspecialchars($row['nama_penyewa']); ?></td>
+                              <td><?php echo htmlspecialchars($row['nama_kamar']); ?></td>
+                              <td><span class="badge <?php echo $badge_class; ?>"><?php echo $label; ?></span></td>
+                            </tr>
+                            <?php
+                          }
+                        }
+                      }
+                      if (!$has_pembayaran) {
+                        echo '<tr><td colspan="3" class="text-center text-muted py-3">Tidak ada data pembayaran aktif</td></tr>';
+                      }
+                      ?>
                     </tbody>
                   </table>
                 </div>
@@ -229,7 +238,7 @@ $kamar_terisi = $laporan->jumlahKamarTidakTersedia();
                       <div class="comment-text w-100">
                         <h6 class="fw-medium">Lionel Cilor</h6>
                         <p class="mb-1 fs-2 text-muted">
-                          Kosan ini sangat bagus, fasilitas sangat lengkap dan service nya benar - benar top.
+                          Kosan ini sangat bagus, sangat strategis untuk pekerja di industri.
                         </p>
                         <div class="comment-footer mt-2">
                           <div class="d-flex align-items-center">

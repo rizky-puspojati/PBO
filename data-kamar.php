@@ -53,30 +53,67 @@ $no = 1;
                       <a href="tambah-kamar.php" class="btn btn-success">Tambah Data</a>
                     </div>
                   </div>
-                  <div class="table-responsive">
-                    <table class="table table-striped">
+                  <div class="table-responsive mt-3">
+                    <table class="table table-striped align-middle">
                       <thead>
                         <tr>
                           <th scope="col">No</th>
                           <th scope="col">Nama Kamar</th>
-                          <th scope="col">Harga</th>
+                          <th scope="col">Tipe</th>
+                          <th scope="col">Ukuran & Kasur</th>
+                          <th scope="col">Harga / Bulan</th>
                           <th scope="col">Status</th>
-                          <th scope="col">Aksi</th>
+                          <th scope="col">Fasilitas</th>
+                          <th scope="col" style="min-width: 200px;">Aksi</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <?php while ($row = $data->fetch_assoc()) { ?>
+                        <?php if ($data && $data->num_rows > 0) { ?>
+                          <?php while ($row = $data->fetch_assoc()) { ?>
+                            <tr>
+                              <th scope="row"><?php echo $no++; ?></th>
+                              <td><strong><?php echo htmlspecialchars($row['nama_kamar']); ?></strong></td>
+                              <td>
+                                <?php if (($row['tipe_kamar'] ?? '') == 'VIP') { ?>
+                                  <span class="badge bg-danger">VIP</span>
+                                <?php } else { ?>
+                                  <span class="badge bg-secondary">Standard</span>
+                                <?php } ?>
+                              </td>
+                              <td>
+                                <small class="d-block text-muted">
+                                  Ukuran: <?php echo htmlspecialchars($row['ukuran'] ?? '3x4'); ?><br>
+                                  Kasur: <?php echo htmlspecialchars($row['tipe_kasur'] ?? 'Single'); ?>
+                                </small>
+                              </td>
+                              <td>Rp <?php echo number_format($row['harga'], 0, ',', '.'); ?></td>
+                              <td>
+                                <?php if ($row['status'] == 'Tersedia') { ?>
+                                  <span class="badge bg-success">Tersedia</span>
+                                <?php } else { ?>
+                                  <span class="badge bg-warning">Terisi</span>
+                                <?php } ?>
+                              </td>
+                              <td>
+                                <small class="text-muted">
+                                  <?php echo htmlspecialchars($row['fasilitas'] ?? '-'); ?>
+                                </small>
+                              </td>
+                              <td>
+                                <div class="btn-group" role="group">
+                                  <a href="detail-kamar.php?id=<?php echo $row['id']; ?>"
+                                    class="btn btn-info btn-sm">Detail</a>
+                                  <a href="edit-kamar.php?id=<?php echo $row['id']; ?>"
+                                    class="btn btn-warning btn-sm">Edit</a>
+                                  <a href="hapus-kamar.php?id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Apakah Anda yakin ingin menghapus kamar ini?')">Hapus</a>
+                                </div>
+                              </td>
+                            </tr>
+                          <?php } ?>
+                        <?php } else { ?>
                           <tr>
-                            <th scope="row"><?php echo $no++; ?></th>
-                            <td><?php echo $row['nama_kamar']; ?></td>
-                            <td><?php echo $row['harga']; ?></td>
-                            <td><?php echo $row['status']; ?></td>
-                            <td>
-                              <a href="edit-kamar.php?id=<?php echo $row['id']; ?>"
-                                class="btn btn-warning btn-sm">Edit</a>
-                              <a href="hapus-kamar.php?id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm"
-                                onclick="return confirm('Apakah Anda yakin ingin menghapus?')">Hapus</a>
-                            </td>
+                            <td colspan="8" class="text-center text-muted">Belum ada data kamar.</td>
                           </tr>
                         <?php } ?>
                       </tbody>
@@ -94,8 +131,6 @@ $no = 1;
     <script src="./assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./assets/js/sidebarmenu.js"></script>
     <script src="./assets/js/app.min.js"></script>
-    <script src="./assets/libs/apexcharts/dist/apexcharts.min.js"></script>
-    <script src="./assets/libs/simplebar/dist/simplebar.js"></script>
   </div>
 </body>
 
